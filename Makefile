@@ -39,3 +39,12 @@ validate-abi:
 clean:
 	rm -rf $(BUILD_DIR) $(DIST_DIR)
 	$(MAKE) -C examples/minimal clean
+
+demo:
+	./scripts/build-demo.sh
+
+test-integration:
+	$(NODE) host/tests/integration.test.js
+
+serve:
+	npx http-server -c-1 .
