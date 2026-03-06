@@ -1,23 +1,41 @@
-.PHONY: build
-.PRECIOUS: intermediate
-*.wasm
-*.manifest.json
 
-node_modules/
-webgl2/
-wasm/
+TERRA ?= terra
+NODE ?= node
+NPM ?= npm
 
-# Output directories
-build/
-dist/
-node_modules/
-examples/
+BUILD_DIR = build
+DIST_DIR = dist
 
-# Compiler binary output (compiler/bin/compiler --build
-compiler/bin/terra -- *.t -- *.lua --source/*.lua
-	$(LUadir) $(TERRAC) -o $(TERRAC) -c $(TERRAC_COMPILER)
-	@echo "Compiler ready"
-	
-# Compiler intermediate files
-build/*.o: *.so
-build/manifest.json
+.PHONY: all build test clean install examples validate-abi
+
+all: build
+
+install:
+	cd host && $(NPM) install
+
+# Build targets
+build:
+	@echo "Building Terra compiler components..."
+	# In a real Terra project this might involve saving a binary or just linting
+	# For now we ensure directories exist
+	mkdir -p $(BUILD_DIR) $(DIST_DIR)
+
+examples:
+	$(MAKE) -C examples/minimal build
+
+# Testing targets
+test: test-compiler test-host
+
+test-compiler:
+	./scripts/test-compiler.sh
+
+test-host:
+	./scripts/test-host.sh
+
+validate-abi:
+	./scripts/validate-abi.sh
+
+# Cleanup
+clean:
+	rm -rf $(BUILD_DIR) $(DIST_DIR)
+	$(MAKE) -C examples/minimal clean

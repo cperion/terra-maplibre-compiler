@@ -1,2 +1,31 @@
-
-# Create package.json in root for npm workspaces. Include: name 'terra-maplibre-compiler', scripts for test/host, test/compiler, build, serve. Set type: module for ESM. AI!
+{
+  "name": "terra-maplibre-compiler",
+  "version": "0.0.1-dev",
+  "type": "module",
+  "description": "AOT map compiler that transforms declarative map specs into specialized Wasm renderer modules",
+  "main": "host/js/index.js",
+  "scripts": {
+    "test": "npm run test:host && npm run test:compiler",
+    "test:host": "node host/tests/resource-tables.test.js && node host/tests/command-interpreter.test.js",
+    "test:compiler": "echo 'Run terra compiler/tests/*.test.lua or lua compiler/tests/*.test.lua'",
+    "build": "bash scripts/build-demo.sh",
+    "serve": "npx http-server -c-1 .",
+    "lint": "echo 'Add ESLint config when needed'"
+  },
+  "keywords": [
+    "maplibre",
+    "webassembly",
+    "maps",
+    "compiler",
+    "aot",
+    "terra"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "workspaces": [
+    "host"
+  ]
+}

@@ -5,15 +5,15 @@
   "properties": {
     "version": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 1,
       "description": "Version of the map compile specification"
     },
     "style": {
-      "type": "object"
+      "type": "object",
       "properties": {
         "layers": {
           "type": "array",
-          "items": {" "$ref": "#/definitions/layers"}
+          "items": {"$ref": "#/definitions/layers"}
         },
         "sources": {
           "type": "object",
@@ -27,7 +27,7 @@
         },
         "assets": {
           "type": "object",
-          "additionalProperties": false
+          "additionalProperties": false,
           "description": "Asset definitions (sprites, glyphs, images)"
         },
         "interaction": {
@@ -50,19 +50,19 @@
         },
         "time-varying_animation_parameters": {
           "type": "boolean"
+        },
+        "minzoom": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 24,
+          "description": "Minimum zoom level"
+        },
+        "maxzoom": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 24,
+          "description": "Maximum zoom level"
         }
-      },
-      "minzoom": {
-        "type": "integer",
-        "minimum": 0
-        "maximum": 24,
-        "description": "Minimum zoom level"
-      },
-      "maxzoom": {
-        "type": "integer",
-        "minimum": 0
-        "maximum": 24,
-        "description": "Maximum zoom level"
       }
     }
   }
