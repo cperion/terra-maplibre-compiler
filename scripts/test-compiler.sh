@@ -1,3 +1,4 @@
+# Included as context AI!
 #!/bin/bash
 # Compiler test runner
 # Runs all compiler tests
@@ -13,3 +14,5 @@ else
     exit 1
 fi
 
+
+# Rewrite this script to be robust like a root-aware runner: use `#!/usr/bin/env bash` and `set -euo pipefail`; compute `ROOT_DIR` from `BASH_SOURCE`; set `TEST_DIR="$ROOT_DIR/compiler/tests"`; validate that directory exists; iterate all `*.lua` files under it (deterministic order) and run each using `terra` if available, otherwise `lua`; print clear progress lines and fail with a helpful message if no interpreter exists. AI!
