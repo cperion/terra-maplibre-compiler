@@ -1,63 +1,101 @@
--- Included as context AI!
--- FILE CONTEXT: Strengthen canonicalization and avoid mutating caller input. AI!
 -- Canonicalizer module
+-- Transforms input spec into canonical form without mutating caller input
 
 local M = {}
 
-function M.canonicalize(spec)
-    local canonical = {}
+local function copy_deep(value)
+    if type(value) == "table" then
+        local result = {}
+        for k, v in pairs(value) do
+            result[k] = copy_deep(v)
+        end
+        return result
+    else
+        return value
+    end
+end
+
+local function canonicalize_layer(layer)
+    -- Create a fresh table for the canonical layer
+    local canonical_layer = {
+        id = layer.id,
+        type = layer.type,
+        source = layer.source,
+        ["source-layer"] = layer["source-layer"],
+        minzoom = layer.minzoom or 0,
+        maxzoom = layer.maxzoom or 24,
+        paint = copy_deep(layer.paint or {}),
+        layout = copy_deep(layer.layout or {})
+    }
     
-    -- Ensure version
+    -- Preserve any other fields from original layer
+    for k, v in pairs(layer) do
+        if not canonical_layer[k] then
+            canonical_layer[k] = copy_deep(v)
+        end
+    end
+    
+    return canonical_layer
+end
+
+function M.canonicalize(spec)
     if not spec.version then
         error("Spec missing version")
     end
-    canonical.version = spec.version
-
-    -- Style normalization
-    canonical.style = spec.style or {}
-    canonical.style.layers = canonical.style.layers or {}
-    canonical.style.sources = canonical.style.sources or {}
     
-    -- Expand shorthands and set defaults for layers
-    for i, layer in ipairs(canonical.style.layers) do
-        if not layer.id then
-            error("Layer at index " .. i .. " missing id")
+    local canonical = {}
+    canonical.version = spec.version
+    
+    -- Initialize style section
+    canonical.style = {
+        layers = {},
+        sources = {}
+    }
+    
+    -- Normalize sources from both locations
+    -- First add from top-level 'sources', then from 'style.sources' (which takes precedence)
+    if spec.sources then
+        for name, source in pairs(spec.sources) do
+            canonical.style.sources[name] = copy_deep(source)
         end
-        if not layer.type then
-            error("Layer " .. layer.id .. " missing type")
-        end
-        
-        -- Defaults
-        layer.paint = layer.paint or {}
-        layer.layout = layer.layout or {}
-        layer.minzoom = layer.minzoom or 0
-        layer.maxzoom = layer.maxzoom or 24
     end
-
-    -- Canonicalize sources
+    
+    if spec.style and spec.style.sources then
+        for name, source in pairs(spec.style.sources) do
+            canonical.style.sources[name] = copy_deep(source)
+        end
+    end
+    
+    -- Canonicalize layers with guaranteed fields
+    if spec.style and spec.style.layers then
+        for i, layer in ipairs(spec.style.layers) do
+            if not layer.id then
+                error("Layer at index " .. i .. " missing id")
+            end
+            if not layer.type then
+                error("Layer " .. layer.id .. " missing type")
+            end
+            
+            table.insert(canonical.style.layers, canonicalize_layer(layer))
+        end
+    end
+    
+    -- Validate sources
     for name, source in pairs(canonical.style.sources) do
         if not source.type then
             error("Source " .. name .. " missing type")
         end
     end
-
-    -- Pass through other top-level fields
-    canonical.schema = spec.schema or {}
-    canonical.assets = spec.assets or {}
-    canonical.interaction = spec.interaction or {}
-    canonical.target = spec.target or {}
-    canonical.constraints = spec.constraints or {}
-    canonical.build = spec.build or {}
-
+    
+    -- Pass through other top-level blocks with defaults
+    canonical.schema = copy_deep(spec.schema or {})
+    canonical.assets = copy_deep(spec.assets or {})
+    canonical.interaction = copy_deep(spec.interaction or {})
+    canonical.target = copy_deep(spec.target or {})
+    canonical.constraints = copy_deep(spec.constraints or {})
+    canonical.build = copy_deep(spec.build or {})
+    
     return canonical
 end
 
 return M
-
--- Refactor canonicalization to construct fresh tables, not mutate `spec` or nested layer/source tables in place. AI!
-
--- Normalize sources from both `style.sources` and top-level `sources` into `canonical.style.sources` using precedence: `style.sources` overrides top-level `sources` on key conflict. AI!
-
--- Preserve original layer ordering; for each layer produce canonical shape with guaranteed fields: `id`, `type`, `source`, `source-layer`, `minzoom`, `maxzoom`, `paint`, `layout`. AI!
-
--- Retain top-level passthrough blocks (`schema`, `assets`, `interaction`, `target`, `constraints`, `build`) with `{}` defaults. AI!

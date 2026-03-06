@@ -9,12 +9,13 @@ Terra Map Compiler
 Usage: terra main.lua [options]
 
 Options:
-  --input <path>      Path to input map specification JSON (required)
-  --output <path>     Path to output Wasm file (default: map.wasm)
-  --schema <path>     Path to output schema JSON (optional)
-  --manifest <path>   Path to output manifest JSON (optional)
-  --debug             Enable debug mode
-  --help              Show this help message
+  --input <path>        Path to input map specification JSON (required)
+  --output <path>       Path to output Wasm file (default: map.wasm)
+  --schema <path>       Path to output schema JSON (optional)
+  --manifest <path>     Path to output manifest JSON (optional)
+  --canonical-out <path> Path to write canonical spec JSON (optional)
+  --debug               Enable debug mode
+  --help                Show this help message
 
 Example:
   terra main.lua --input examples/minimal/spec.json --output dist/map.wasm
@@ -26,6 +27,7 @@ local function parse_args(args)
         output = "map.wasm",
         schema = nil,
         manifest = nil,
+        canonical_out = nil,
         debug = false
     }
     
@@ -44,6 +46,9 @@ local function parse_args(args)
         elseif arg == "--manifest" then
             i = i + 1
             options.manifest = args[i]
+        elseif arg == "--canonical-out" then
+            i = i + 1
+            options.canonical_out = args[i]
         elseif arg == "--debug" then
             options.debug = true
         elseif arg == "--help" then
@@ -82,7 +87,9 @@ local function main()
     
     -- Load compiler modules
     local parser = require("compiler.lua.parser")
+    local spec_validator = require("compiler.lua.spec-validator")
     local canonicalizer = require("compiler.lua.canonicalizer")
+    local json_util = require("compiler.lua.json-util")
     local schema_builder = require("compiler.lua.schema-builder")
     local layer_planner = require("compiler.lua.layer-planner")
     local expression_lowerer = require("compiler.lua.expression-lowerer")
@@ -91,27 +98,51 @@ local function main()
     local emitter = require("compiler.lua.emitter")
 
     -- 1. Parse
-    print("[1/8] Parsing spec...")
+    print("[1/9] Parsing spec...")
     local raw_spec, err = parser.parse_spec(opts.input)
     if not raw_spec then
         print("Error parsing spec: " .. tostring(err))
         os.exit(1)
     end
 
-    -- 2. Canonicalize
-    print("[2/8] Canonicalizing...")
+    -- 2. Validate
+    print("[2/9] Validating spec...")
+    local valid, errors = spec_validator.validate(raw_spec)
+    if not valid then
+        print("Spec validation failed:")
+        for _, error_msg in ipairs(errors) do
+            print("  " .. error_msg)
+        end
+        os.exit(1)
+    end
+
+    -- 3. Canonicalize
+    print("[3/9] Canonicalizing...")
     local canonical_spec = canonicalizer.canonicalize(raw_spec)
 
-    -- 3. Build Schema
-    print("[3/8] Building schema...")
+    -- Write canonical output if requested
+    if opts.canonical_out then
+        local canonical_json = json_util.encode(canonical_spec)
+        local f, err = io.open(opts.canonical_out, "w")
+        if f then
+            f:write(canonical_json)
+            f:close()
+            print("  Canonical spec written to: " .. opts.canonical_out)
+        else
+            print("Warning: Could not write canonical spec to " .. opts.canonical_out .. ": " .. tostring(err))
+        end
+    end
+
+    -- 4. Build Schema
+    print("[4/9] Building schema...")
     local schema = schema_builder.build(canonical_spec)
 
-    -- 4. Plan Layers
-    print("[4/8] Planning layers...")
+    -- 5. Plan Layers
+    print("[5/9] Planning layers...")
     local layer_plan = layer_planner.plan(canonical_spec)
 
-    -- 5. Lower Expressions (iterate over layers in plan)
-    print("[5/8] Lowering expressions...")
+    -- 6. Lower Expressions (iterate over layers in plan)
+    print("[6/9] Lowering expressions...")
     -- This is a simplification; normally we'd update the layer plan or a new IR with lowered exprs
     for _, layer in ipairs(layer_plan.layers) do
         -- Lower filter if present (mock implementation structure)
@@ -120,20 +151,20 @@ local function main()
         -- for prop, expr in pairs(layer.paint) do ... end
     end
 
-    -- 6. Specialize
-    print("[6/8] Specializing...")
+    -- 7. Specialize
+    print("[7/9] Specializing...")
     local specialized_ir = specializer.specialize(layer_plan, canonical_spec.constraints)
 
-    -- 7. Generate Shaders
-    print("[7/8] Generating shaders...")
+    -- 8. Generate Shaders
+    print("[8/9] Generating shaders...")
     for _, layer in ipairs(specialized_ir.layers) do
         -- Mock attaching shader source to layer IR
         layer.vertex_shader = shader_gen.generate_vertex_shader(layer)
         layer.fragment_shader = shader_gen.generate_fragment_shader(layer)
     end
 
-    -- 8. Emit Wasm
-    print("[8/8] Emitting Wasm...")
+    -- 9. Emit Wasm
+    print("[9/9] Emitting Wasm...")
     local wasm_bytes = emitter.emit(specialized_ir)
 
     -- Write output
@@ -158,11 +189,3 @@ local function main()
 end
 
 main()
-
--- Add CLI option `--canonical-out <path>` in usage text and argument parser. AI!
-
--- Require and run `spec-validator` after parsing and before canonicalization. On failure, print a concise header and each validation error on its own line, then exit 1. AI!
-
--- When `--canonical-out` is provided, write canonical JSON using `json-util.encode(canonical_spec)` immediately after canonicalization, with robust file-write error handling consistent with existing output handling. AI!
-
--- Keep existing pipeline stage numbering sensible after adding validation/canonical dump; update progress log text if needed so output remains understandable. AI!

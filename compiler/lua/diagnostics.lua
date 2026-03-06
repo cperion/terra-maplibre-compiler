@@ -1,4 +1,3 @@
--- Included as context AI!
 -- Diagnostics and error reporting
 
 local M = {}
