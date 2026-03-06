@@ -5,6 +5,7 @@ This is the minimal working example that proves the core architecture: a map spe
 ## Purpose
 
 This example validates:
+
 - Host ABI contract
 - Memory layout
 - Command stream protocol
