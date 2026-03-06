@@ -18,6 +18,31 @@ local function test_valid_background()
     print("PASS: test_valid_background")
 end
 
+local function test_invalid_version_type()
+    local spec = {
+        version = 1.5,
+        style = {
+            layers = {
+                { id = "bg", type = "background" }
+            }
+        }
+    }
+    local ok, errors = spec_validator.validate(spec)
+    assert(not ok, "Non-integer version should fail")
+    assert(#errors > 0, "Should have errors")
+    print("PASS: test_invalid_version_type")
+end
+
+local function test_missing_style()
+    local spec = {
+        version = 1
+    }
+    local ok, errors = spec_validator.validate(spec)
+    assert(not ok, "Missing style should fail")
+    assert(#errors > 0, "Should have errors")
+    print("PASS: test_missing_style")
+end
+
 local function test_duplicate_layer_ids()
     local spec = {
         version = 1,
@@ -128,6 +153,24 @@ local function test_minzoom_greater_than_maxzoom()
     print("PASS: test_minzoom_greater_than_maxzoom")
 end
 
+local function test_invalid_source_layer_when_present()
+    local spec = {
+        version = 1,
+        style = {
+            sources = {
+                roads_src = { type = "vector" }
+            },
+            layers = {
+                { id = "roads", type = "line", source = "roads_src", ["source-layer"] = "" }
+            }
+        }
+    }
+    local ok, errors = spec_validator.validate(spec)
+    assert(not ok, "Empty source-layer should fail")
+    assert(#errors > 0, "Should have errors")
+    print("PASS: test_invalid_source_layer_when_present")
+end
+
 local function test_fixture_specs()
     local minimal_path = "shared/fixtures/specs/minimal-clear.json"
     local fill_path = "shared/fixtures/specs/fill-layer.json"
@@ -154,10 +197,13 @@ local function test_fixture_specs()
 end
 
 test_valid_background()
+test_invalid_version_type()
+test_missing_style()
 test_duplicate_layer_ids()
 test_unsupported_layer_type()
 test_missing_source_for_fill()
 test_unknown_source_reference()
 test_invalid_zoom_range()
 test_minzoom_greater_than_maxzoom()
+test_invalid_source_layer_when_present()
 test_fixture_specs()

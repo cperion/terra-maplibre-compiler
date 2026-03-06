@@ -127,7 +127,8 @@ local function main()
             f:close()
             print("  Canonical spec written to: " .. opts.canonical_out)
         else
-            print("Warning: Could not write canonical spec to " .. opts.canonical_out .. ": " .. tostring(err))
+            print("Error: Could not write canonical spec to " .. opts.canonical_out .. ": " .. tostring(err))
+            os.exit(1)
         end
     end
 
