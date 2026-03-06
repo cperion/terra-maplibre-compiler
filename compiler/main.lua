@@ -1,5 +1,3 @@
--- Included as context AI!
--- FILE CONTEXT: Integrate validation and canonical dump output into the existing 8-step pipeline. AI!
 #!/usr/bin/env lua
 -- Main compiler entry point
 -- Usage: terra main.lua --input spec.json --output map.wasm

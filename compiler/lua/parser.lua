@@ -194,7 +194,6 @@ if not json then
     json = make_minimal_json_decoder()
 end
 
-
 function M.parse_spec(filepath)
     local f = io.open(filepath, "r")
     if not f then
@@ -206,12 +205,10 @@ function M.parse_spec(filepath)
 
     local success, result = pcall(json.decode, content)
     if not success then
-        return nil, "JSON parse error: " .. tostring(result)
+        return nil, "JSON parse error in " .. filepath .. ": " .. tostring(result)
     end
 
     return result
 end
 
 return M
-
--- Keep current decoder behavior, but make parse errors include the input file path in returned error text for easier debugging. Do not change the success return shape. AI!
