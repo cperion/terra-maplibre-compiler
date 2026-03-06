@@ -1,5 +1,3 @@
--- Included as context AI!
--- FILE CONTEXT: Parser already has fallback decoder; keep behavior but ensure parse errors are clear. AI!
 -- Parser module for map specs
 
 local M = {}
