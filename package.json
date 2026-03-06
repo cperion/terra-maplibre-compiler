@@ -1,0 +1,2 @@
+
+# Create package.json in root for npm workspaces. Include: name 'terra-maplibre-compiler', scripts for test/host, test/compiler, build, serve. Set type: module for ESM. AI!

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Vector Source schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "geometry": {
+      "type": "string",
+      "enum": ["point", "line", "polygon"]
+    }
+  }
+}

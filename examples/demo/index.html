@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terra Map Demo</title>
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; color: white; font-family: sans-serif; }
+        canvas { display: block; width: 100%; height: 100%; }
+        #ui { position: absolute; top: 10px; left: 10px; pointer-events: none; }
+        #fps { background: rgba(0,0,0,0.5); padding: 5px; border-radius: 4px; }
+        #controls { margin-top: 10px; pointer-events: auto; }
+        button { background: #333; color: white; border: 1px solid #555; padding: 5px 10px; cursor: pointer; }
+        button:hover { background: #444; }
+        #loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; }
+    </style>
+</head>
+<body>
+    <canvas id="map-canvas"></canvas>
+    
+    <div id="loading">Loading Map...</div>
+    
+    <div id="ui">
+        <div id="fps">FPS: --</div>
+        <div id="controls">
+            <button id="btn-reset">Reset Camera</button>
+            <div style="margin-top: 5px; font-size: 12px; color: #aaa;">
+                Drag to pan • Scroll to zoom
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import Host from '../../host/js/host.js';
+        import { EventBridge } from '../../host/js/event-bridge.js';
+
+        const canvas = document.getElementById('map-canvas');
+        const loading = document.getElementById('loading');
+        const fpsDisplay = document.getElementById('fps');
+        
+        let lastTime = performance.now();
+        let frameCount = 0;
+        let host = null;
+
+        async function init() {
+            try {
+                host = new Host(canvas);
+                
+                // Load Wasm
+                await host.load('map.wasm');
+                
+                // Initialize runtime
+                await host.initialize();
+                
+                // Setup events
+                const bridge = new EventBridge(host._instance);
+                bridge.attach(canvas);
+                
+                // Setup resize
+                window.addEventListener('resize', () => {
+                    host.resize(canvas.clientWidth, canvas.clientHeight);
+                });
+                
+                // Hook into frame loop for FPS
+                const originalFrame = host._renderFrame.bind(host);
+                host._renderFrame = function() {
+                    originalFrame();
+                    frameCount++;
+                    const now = performance.now();
+                    if (now - lastTime >= 1000) {
+                        fpsDisplay.textContent = `FPS: ${frameCount}`;
+                        frameCount = 0;
+                        lastTime = now;
+                    }
+                };
+
+                // Remove loading
+                loading.style.display = 'none';
+                
+            } catch (err) {
+                loading.textContent = "Error: " + err.message;
+                loading.style.color = "#ff5555";
+                console.error(err);
+            }
+        }
+        
+        document.getElementById('btn-reset').addEventListener('click', () => {
+             // In a real app we'd call a reset method on the host or command stream
+             console.log("Reset camera requested");
+        });
+
+        init();
+    </script>
+</body>
+</html>

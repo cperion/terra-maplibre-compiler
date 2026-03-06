@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "style": {
+    "layers": [
+      {
+        "id": "background",
+        "type": "background",
+        "paint": {
+          "background-color": "#1a1a2a"
+        }
+      }
+    ]
+  },
+  "sources": {},
+  "schema": {},
+  "assets": {},
+  "interaction": {
+    "camera": ["pan", "zoom"]
+  },
+  "target": {
+    "platform": "browser",
+    "graphics": "webgl2",
+    "wasm": {
+      "memory_pages_initial": 256,
+      "memory_pages_max": 1024,
+      "shared": false
+    }
+  },
+  "constraints": {
+    "allow_runtime_restyle": false,
+    "allow_feature_state": false,
+    "allow_symbols": false,
+    "schema_locked": true,
+    "fixed_tile_extent": 4096
+  },
+  "build": {
+    "optimization_level": 2,
+    "debug_info": false,
+    "deterministic": true,
+    "instrumentation": false
+  }
+}

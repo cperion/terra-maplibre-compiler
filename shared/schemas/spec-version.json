@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "version_major": 1,
+  "version_minor": 0,
+  "version_patch": 0,
+  "stability": "stable",
+  "description": "Version 1.0 of the map compile specification schema"
+}

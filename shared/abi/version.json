@@ -1,0 +1,8 @@
+{
+  "abi_version": "0.1.0",
+  "abi_version_major": 0,
+  "abi_version_minor": 1,
+  "abi_version_patch": 0,
+  "stability": "experimental",
+  "description": "Version 0.1.0 of the browser host ABI - experimental initial version"
+}

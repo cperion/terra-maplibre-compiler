@@ -1,0 +1,185 @@
+{
+  "version": {
+    "major": 0,
+    "minor": 1,
+    "patch": 0
+  },
+  "frame_header": {
+    "magic": "FRME",
+    "fields": [
+      { "name": "magic", "type": "u32", "value": "0x46524D45" },
+      { "name": "version_major", "type": "u16" },
+      { "name": "version_minor", "type": "u16" },
+      { "name": "frame_id", "type": "u32" },
+      { "name": "command_count", "type": "u32" },
+      { "name": "flags", "type": "u32" },
+      { "name": "reserved", "type": "u32" }
+    ]
+  },
+  "command_header": {
+    "fields": [
+      { "name": "opcode", "type": "u16" },
+      { "name": "size", "type": "u16" }
+    ]
+  },
+  "opcodes": [
+    {
+      "opcode": "0x0001",
+      "name": "BEGIN_FRAME",
+      "description": "Start of frame rendering",
+      "payload_fields": []
+    },
+    {
+      "opcode": "0x0002",
+      "name": "END_FRAME",
+      "description": "End of frame rendering",
+      "payload_fields": []
+    },
+    {
+      "opcode": "0x0003",
+      "name": "CLEAR",
+      "description": "Clear framebuffer",
+      "payload_fields": [
+        { "name": "r", "type": "u8" },
+        { "name": "g", "type": "u8" },
+        { "name": "b", "type": "u8" },
+        { "name": "a", "type": "u8" },
+        { "name": "depth", "type": "f32" },
+        { "name": "stencil", "type": "u8" },
+        { "name": "flags", "type": "u8" },
+        { "name": "padding", "type": "u16" }
+      ]
+    },
+    {
+      "opcode": "0x0004",
+      "name": "USE_PROGRAM",
+      "description": "Bind shader program",
+      "payload_fields": [
+        { "name": "program_id", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x0005",
+      "name": "CREATE_BUFFER",
+      "description": "Allocate GPU buffer",
+      "payload_fields": [
+        { "name": "buffer_id", "type": "u32" },
+        { "name": "size", "type": "u32" },
+        { "name": "usage", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x0006",
+      "name": "UPLOAD_BUFFER",
+      "description": "Upload data to GPU buffer",
+      "payload_fields": [
+        { "name": "buffer_id", "type": "u32" },
+        { "name": "offset", "type": "u32" },
+        { "name": "data_ptr", "type": "u32" },
+        { "name": "length", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x0007",
+      "name": "BIND_VERTEX_BUFFER",
+      "description": "Bind vertex buffer to slot",
+      "payload_fields": [
+        { "name": "slot", "type": "u32" },
+        { "name": "buffer_id", "type": "u32" },
+        { "name": "stride", "type": "u32" },
+        { "name": "offset", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x0008",
+      "name": "BIND_INDEX_BUFFER",
+      "description": "Bind index buffer",
+      "payload_fields": [
+        { "name": "buffer_id", "type": "u32" },
+        { "name": "type", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x0009",
+      "name": "SET_VIEWPORT",
+      "description": "Set render viewport",
+      "payload_fields": [
+        { "name": "x", "type": "i32" },
+        { "name": "y", "type": "i32" },
+        { "name": "width", "type": "u32" },
+        { "name": "height", "type": "u32" },
+        { "name": "min_depth", "type": "f32" },
+        { "name": "max_depth", "type": "f32" }
+      ]
+    },
+    {
+      "opcode": "0x000A",
+      "name": "SET_BLEND_STATE",
+      "description": "Configure blending",
+      "payload_fields": [
+        { "name": "enabled", "type": "u8" },
+        { "name": "src_rgb", "type": "u8" },
+        { "name": "dst_rgb", "type": "u8" },
+        { "name": "src_alpha", "type": "u8" },
+        { "name": "dst_alpha", "type": "u8" },
+        { "name": "equation_rgb", "type": "u8" },
+        { "name": "equation_alpha", "type": "u8" },
+        { "name": "padding", "type": "u8" }
+      ]
+    },
+    {
+      "opcode": "0x000B",
+      "name": "SET_UNIFORM_BLOCK",
+      "description": "Update uniform data",
+      "payload_fields": [
+        { "name": "program_id", "type": "u32" },
+        { "name": "block_index", "type": "u32" },
+        { "name": "ptr", "type": "u32" },
+        { "name": "len", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x000C",
+      "name": "DRAW_INDEXED",
+      "description": "Draw indexed geometry",
+      "payload_fields": [
+        { "name": "mode", "type": "u32" },
+        { "name": "count", "type": "u32" },
+        { "name": "type", "type": "u32" },
+        { "name": "offset", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x000D",
+      "name": "DRAW_ARRAYS",
+      "description": "Draw non-indexed geometry",
+      "payload_fields": [
+        { "name": "mode", "type": "u32" },
+        { "name": "first", "type": "u32" },
+        { "name": "count", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x000E",
+      "name": "DESTROY_BUFFER",
+      "description": "Free GPU buffer",
+      "payload_fields": [
+        { "name": "buffer_id", "type": "u32" }
+      ]
+    },
+    {
+      "opcode": "0x000F",
+      "name": "DESTROY_PROGRAM",
+      "description": "Free shader program",
+      "payload_fields": [
+        { "name": "program_id", "type": "u32" }
+      ]
+    }
+  ],
+  "validation_rules": [
+    "Alignment: All commands must start on a 4-byte boundary.",
+    "Bounds Checking: ptr + size must not exceed the frame arena size.",
+    "Handle Validation: Host must verify that program_id and buffer_id refer to valid, existing resources.",
+    "Pointer Validation: data_ptr in upload commands must point to valid shared memory regions."
+  ]
+}

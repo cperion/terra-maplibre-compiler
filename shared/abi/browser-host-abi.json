@@ -1,0 +1,266 @@
+{
+  "abi_version": {
+    "major": 0,
+    "minor": 1,
+    "patch": 0
+  },
+  "imports": [
+    {
+      "name": "now_ms",
+      "category": "required",
+      "return_type": "f64",
+      "parameters": [],
+      "description": "Returns the current time in milliseconds since the epoch."
+    },
+    {
+      "name": "log",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "ptr", "type": "i32" },
+        { "name": "len", "type": "i32" }
+      ],
+      "description": "Logs a message to the host's console. The message is a UTF-8 string."
+    },
+    {
+      "name": "request_frame",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [],
+      "description": "Requests that the host schedule a new frame to be rendered."
+    },
+    {
+      "name": "canvas_size",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "width_ptr", "type": "i32" },
+        { "name": "height_ptr", "type": "i32" }
+      ],
+      "description": "Writes the current canvas dimensions into the provided memory locations (u32)."
+    },
+    {
+      "name": "submit_commands",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "ptr", "type": "i32" },
+        { "name": "len", "type": "i32" }
+      ],
+      "description": "Submits a buffer of drawing commands to the host renderer."
+    },
+    {
+      "name": "fetch_start",
+      "category": "required",
+      "return_type": "i32",
+      "parameters": [
+        { "name": "url_ptr", "type": "i32" },
+        { "name": "url_len", "type": "i32" },
+        { "name": "method_ptr", "type": "i32" },
+        { "name": "method_len", "type": "i32" },
+        { "name": "req_id", "type": "i32" }
+      ],
+      "description": "Initiates a network fetch. Returns 0 on success (initiation), or error code."
+    },
+    {
+      "name": "resource_release",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "resource_id", "type": "i32" }
+      ],
+      "description": "Releases a host-managed resource by ID."
+    },
+    {
+      "name": "read_device_pixel_ratio",
+      "category": "optional",
+      "return_type": "f64",
+      "parameters": [],
+      "description": "Returns the device pixel ratio (DPR)."
+    },
+    {
+      "name": "performance_mark",
+      "category": "optional",
+      "return_type": "void",
+      "parameters": [
+        { "name": "ptr", "type": "i32" },
+        { "name": "len", "type": "i32" }
+      ],
+      "description": "Emits a performance mark with the given name."
+    },
+    {
+      "name": "image_decode",
+      "category": "optional",
+      "return_type": "i32",
+      "parameters": [
+        { "name": "data_ptr", "type": "i32" },
+        { "name": "data_len", "type": "i32" },
+        { "name": "callback_id", "type": "i32" }
+      ],
+      "description": "Requests decoding of image data. Result returned via callback."
+    }
+  ],
+  "exports": [
+    {
+      "name": "init",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [],
+      "description": "Called once by the host to initialize the module."
+    },
+    {
+      "name": "frame",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "time", "type": "f64" }
+      ],
+      "description": "Called by the host to render a frame. Time is ms since start."
+    },
+    {
+      "name": "resize",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "width", "type": "i32" },
+        { "name": "height", "type": "i32" }
+      ],
+      "description": "Called when the canvas is resized."
+    },
+    {
+      "name": "pointer_move",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "x", "type": "i32" },
+        { "name": "y", "type": "i32" }
+      ],
+      "description": "Called on pointer movement. Coords are Q16.16."
+    },
+    {
+      "name": "pointer_down",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "x", "type": "i32" },
+        { "name": "y", "type": "i32" },
+        { "name": "btn", "type": "i32" }
+      ],
+      "description": "Called on pointer button press. Coords are Q16.16."
+    },
+    {
+      "name": "pointer_up",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "x", "type": "i32" },
+        { "name": "y", "type": "i32" },
+        { "name": "btn", "type": "i32" }
+      ],
+      "description": "Called on pointer button release. Coords are Q16.16."
+    },
+    {
+      "name": "wheel",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "dx", "type": "i32" },
+        { "name": "dy", "type": "i32" },
+        { "name": "dz", "type": "i32" }
+      ],
+      "description": "Called on wheel event. Deltas are Q16.16."
+    },
+    {
+      "name": "key_event",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "code", "type": "i32" },
+        { "name": "down", "type": "i32" }
+      ],
+      "description": "Called on keyboard event. 'down' is 1 for press, 0 for release."
+    },
+    {
+      "name": "resource_loaded",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "req_id", "type": "i32" },
+        { "name": "data_ptr", "type": "i32" },
+        { "name": "data_len", "type": "i32" }
+      ],
+      "description": "Called when a resource fetch completes successfully."
+    },
+    {
+      "name": "resource_failed",
+      "category": "required",
+      "return_type": "void",
+      "parameters": [
+        { "name": "req_id", "type": "i32" },
+        { "name": "error_code", "type": "i32" }
+      ],
+      "description": "Called when a resource fetch fails."
+    },
+    {
+      "name": "set_time_param",
+      "category": "optional",
+      "return_type": "void",
+      "parameters": [
+        { "name": "param_id", "type": "i32" },
+        { "name": "value", "type": "f64" }
+      ],
+      "description": "Sets a time-based parameter."
+    },
+    {
+      "name": "query_feature",
+      "category": "optional",
+      "return_type": "i32",
+      "parameters": [
+        { "name": "feature_id", "type": "i32" }
+      ],
+      "description": "Queries if a feature is supported."
+    },
+    {
+      "name": "get_stats",
+      "category": "optional",
+      "return_type": "void",
+      "parameters": [
+        { "name": "ptr", "type": "i32" },
+        { "name": "capacity", "type": "i32" }
+      ],
+      "description": "Writes stats into buffer."
+    }
+  ],
+  "status_codes": [
+    { "code": 0, "name": "OK", "meaning": "Operation completed successfully." },
+    { "code": 1, "name": "RETRY_LATER", "meaning": "Resource temporarily unavailable." },
+    { "code": 2, "name": "INVALID_ARGUMENT", "meaning": "One or more arguments were invalid." },
+    { "code": 3, "name": "OUT_OF_MEMORY", "meaning": "Host or guest out of memory." },
+    { "code": 4, "name": "UNSUPPORTED", "meaning": "Operation not supported." },
+    { "code": 5, "name": "INTERNAL_ERROR", "meaning": "Unspecified internal error." }
+  ],
+  "memory_contract": {
+    "alignment": 4,
+    "endianness": "little",
+    "conventions": [
+      "All pointers are 32-bit integer offsets into linear memory.",
+      "Lengths are 32-bit integers representing byte counts.",
+      "Pointers passed from guest to host are valid until the call returns."
+    ],
+    "regions": [
+      "Stack",
+      "Heap",
+      "Static Data"
+    ]
+  },
+  "calling_conventions": {
+    "integer_encoding": "Q16.16 fixed-point notation for coordinates. 65536 = 1.0.",
+    "string_encoding": "UTF-8 encoded strings passed as (ptr, len) pairs.",
+    "struct_layout": [
+      "C-compatible struct layout.",
+      "Fields aligned to their natural size.",
+      "No padding at start.",
+      "Padding at end to align struct size to largest member alignment."
+    ]
+  }
+}

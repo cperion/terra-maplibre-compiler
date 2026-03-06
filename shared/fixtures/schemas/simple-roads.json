@@ -1,0 +1,43 @@
+{
+  "roads": {
+    "geometry": "line",
+    "properties": {
+      "class": {
+        "type": "enum",
+        "values": [
+          "motorway",
+          "primary",
+          "secondary",
+          "street",
+          "local",
+          "service"
+        ],
+        "nullable": false
+      },
+      "bridge": {
+        "type": "bool",
+        "default": false,
+        "nullable": false
+      },
+      "tunnel": {
+        "type": "bool",
+        "default": false,
+        "nullable": false
+      },
+      "layer": {
+        "type": "i8",
+        "default": 0,
+        "nullable": false
+      },
+      "name": {
+        "type": "string",
+        "nullable": true
+      },
+      "oneway": {
+        "type": "bool",
+        "default": false,
+        "nullable": false
+      }
+    }
+  }
+}

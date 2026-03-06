@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "Map compile spec",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "integer",
+      "minimum": 1
+      "description": "Version of the map compile specification"
+    },
+    "style": {
+      "type": "object"
+      "properties": {
+        "layers": {
+          "type": "array",
+          "items": {" "$ref": "#/definitions/layers"}
+        },
+        "sources": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Source definitions"
+        },
+        "schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Source schema definitions"
+        },
+        "assets": {
+          "type": "object",
+          "additionalProperties": false
+          "description": "Asset definitions (sprites, glyphs, images)"
+        },
+        "interaction": {
+          "type": "object",
+          "properties": {
+            "camera": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "hover_queries": {
+              "type": "boolean"
+            },
+            "click_selection": {
+              "type": "boolean"
+            }
+          }
+        },
+        "viewport_resize": {
+          "type": "boolean"
+        },
+        "time-varying_animation_parameters": {
+          "type": "boolean"
+        }
+      },
+      "minzoom": {
+        "type": "integer",
+        "minimum": 0
+        "maximum": 24,
+        "description": "Minimum zoom level"
+      },
+      "maxzoom": {
+        "type": "integer",
+        "minimum": 0
+        "maximum": 24,
+        "description": "Maximum zoom level"
+      }
+    }
+  }
+}

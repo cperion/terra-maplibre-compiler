@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "style": {
+    "sources": {
+      "countries": {
+        "type": "vector",
+        "url": "mapbox://mapbox.country_boundaries",
+        "minzoom": 0,
+        "maxzoom": 10
+      }
+    },
+    "layers": [
+      {
+        "id": "country-fill",
+        "type": "fill",
+        "source": "countries",
+        "source-layer": "country_boundaries",
+        "minzoom": 1,
+        "maxzoom": 10,
+        "paint": {
+          "fill-color": "#4a90e2",
+          "fill-opacity": 0.6
+        }
+      }
+    ]
+  },
+  "schema": {
+    "country_boundaries": {
+      "geometry": "polygon",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "pop_est": {
+          "type": "i32",
+          "nullable": true
+        }
+      }
+    }
+  },
+  "assets": {},
+  "interaction": {
+    "camera": [
+      "pan",
+      "zoom"
+    ]
+  },
+  "target": {
+    "platform": "browser",
+    "graphics": "webgl2",
+    "wasm": {
+      "memory_pages_initial": 256,
+      "memory_pages_max": 1024,
+      "shared": false
+    }
+  },
+  "constraints": {
+    "allow_runtime_restyle": false,
+    "allow_feature_state": false,
+    "allow_symbols": false,
+    "schema_locked": true,
+    "fixed_tile_extent": 4096
+  },
+  "build": {
+    "optimization_level": 2,
+    "debug_info": false,
+    "deterministic": true,
+    "instrumentation": false
+  }
+}
