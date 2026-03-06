@@ -1,3 +1,5 @@
+-- Included as context AI!
+-- FILE CONTEXT: Expand canonicalizer coverage for new normalization guarantees. AI!
 
 -- Unit tests for canonicalizer
 
@@ -44,3 +46,7 @@ end
 test_valid_spec()
 test_missing_version()
 test_missing_layer_id()
+
+-- Add tests that verify canonicalizer does not mutate the input spec tables (including nested layers). AI!
+
+-- Add tests that verify source normalization from top-level `sources` and conflict precedence where both `sources` and `style.sources` define same key. AI!

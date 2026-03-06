@@ -1,3 +1,5 @@
+-- Included as context AI!
+-- FILE CONTEXT: Strengthen canonicalization and avoid mutating caller input. AI!
 -- Canonicalizer module
 
 local M = {}
@@ -51,3 +53,11 @@ function M.canonicalize(spec)
 end
 
 return M
+
+-- Refactor canonicalization to construct fresh tables, not mutate `spec` or nested layer/source tables in place. AI!
+
+-- Normalize sources from both `style.sources` and top-level `sources` into `canonical.style.sources` using precedence: `style.sources` overrides top-level `sources` on key conflict. AI!
+
+-- Preserve original layer ordering; for each layer produce canonical shape with guaranteed fields: `id`, `type`, `source`, `source-layer`, `minzoom`, `maxzoom`, `paint`, `layout`. AI!
+
+-- Retain top-level passthrough blocks (`schema`, `assets`, `interaction`, `target`, `constraints`, `build`) with `{}` defaults. AI!

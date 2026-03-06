@@ -1,3 +1,5 @@
+-- Included as context AI!
+-- FILE CONTEXT: Integrate validation and canonical dump output into the existing 8-step pipeline. AI!
 #!/usr/bin/env lua
 -- Main compiler entry point
 -- Usage: terra main.lua --input spec.json --output map.wasm
@@ -156,3 +158,11 @@ local function main()
 end
 
 main()
+
+-- Add CLI option `--canonical-out <path>` in usage text and argument parser. AI!
+
+-- Require and run `spec-validator` after parsing and before canonicalization. On failure, print a concise header and each validation error on its own line, then exit 1. AI!
+
+-- When `--canonical-out` is provided, write canonical JSON using `json-util.encode(canonical_spec)` immediately after canonicalization, with robust file-write error handling consistent with existing output handling. AI!
+
+-- Keep existing pipeline stage numbering sensible after adding validation/canonical dump; update progress log text if needed so output remains understandable. AI!

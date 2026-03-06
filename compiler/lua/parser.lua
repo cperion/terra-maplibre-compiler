@@ -1,3 +1,5 @@
+-- Included as context AI!
+-- FILE CONTEXT: Parser already has fallback decoder; keep behavior but ensure parse errors are clear. AI!
 -- Parser module for map specs
 
 local M = {}
@@ -211,3 +213,5 @@ function M.parse_spec(filepath)
 end
 
 return M
+
+-- Keep current decoder behavior, but make parse errors include the input file path in returned error text for easier debugging. Do not change the success return shape. AI!
