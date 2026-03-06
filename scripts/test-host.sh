@@ -1,8 +1,11 @@
-#!/bin/bash
-# Host test runner  
-# Runs all host tests
-set -e
+#!/usr/bin/env bash
+# Host test runner
+# Runs host unit tests and optional integration test.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo "Running host tests..."
-# Assuming tests are run via npm in the host directory
-cd ../host && npm test
+node "$ROOT_DIR/host/tests/resource-tables.test.js"
+node "$ROOT_DIR/host/tests/command-interpreter.test.js"
+node "$ROOT_DIR/host/tests/integration.test.js"

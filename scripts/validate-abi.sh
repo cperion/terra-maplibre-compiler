@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # ABI validation script
 
 # Validates ABI conformance between compiler and host
-set -e
+set -euo pipefail
 
 # Compute root directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,10 +11,9 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 echo "Validating ABI conformance..."
 
 # Run inline Node.js validation
-node --input-type=module - <<'EOF'
+ROOT_DIR="$ROOT_DIR" node --input-type=module - <<'EOF'
 import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 
 const rootDir = process.env.ROOT_DIR;
 const versionPath = join(rootDir, 'shared/abi/version.json');
@@ -69,5 +68,3 @@ try {
   process.exit(1);
 }
 EOF
-
-export ROOT_DIR
